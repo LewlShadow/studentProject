@@ -7,6 +7,12 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * @prOjEct studentProject-main
+ * @DAtE 4/2/2024
+ * @tImE 4:43 PM
+ * @AUthOr tuanda52
+ */
 public class EntityResponse {
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status, Object responseObj) {
 

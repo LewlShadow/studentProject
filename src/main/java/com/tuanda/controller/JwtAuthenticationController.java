@@ -1,26 +1,22 @@
 package com.tuanda.controller;
 
-import com.tuanda.common.EntityResponse;
 import com.tuanda.config.JWTTokenUtil;
 import com.tuanda.dto.request.LoginRequestDTO;
 import com.tuanda.dto.request.UserRequestDTO;
-import com.tuanda.dto.response.LoginResponseDTO;
+import com.tuanda.dto.response.AuthenticationResponseDTO;
 import com.tuanda.service.JwtUserDetailsService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import com.tuanda.common.EntityResponse;
 
 
 @RestController
 @CrossOrigin
-public class JwtAuthenticationController {
+public class JwtAuthenticationController extends BaseController{
 
     @Autowired
     private JWTTokenUtil jwtTokenUtil;
@@ -28,12 +24,9 @@ public class JwtAuthenticationController {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @SneakyThrows
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginRequestDTO loginRequestDTO){
 
         try {
             authenticate(loginRequestDTO);
@@ -47,24 +40,12 @@ public class JwtAuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
         final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
-        return ResponseEntity.ok(new LoginResponseDTO(token, refreshToken));
+        return ResponseEntity.ok(new AuthenticationResponseDTO(token, refreshToken));
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> saveUser(@RequestBody UserRequestDTO requestDTO) {
+    public ResponseEntity<?> saveUser(@RequestBody UserRequestDTO requestDTO) throws Exception {
         return ResponseEntity.ok(userDetailsService.save(requestDTO));
-    }
-
-    private void authenticate(LoginRequestDTO loginRequestDTO) throws Exception {
-        String username = loginRequestDTO.getUsername();
-        String password = loginRequestDTO.getPassword();
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
     }
 
 }

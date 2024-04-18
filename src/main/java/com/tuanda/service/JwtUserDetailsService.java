@@ -26,9 +26,23 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        User user = this.userRepository.findByEmail(username);
+//
+//        if (Objects.isNull(user)) throw new UsernameNotFoundException("User not found with username: " + username);
+//
+//        //generate role from database
+//        List<RoleSecurity> roles = this.generateRole(user.getRole());
+//
+//        return new org.springframework.security.core.userdetails.User(user.getEmail(),
+//                bcryptEncoder.encode(user.getPassword()),
+//                roles);
+//    }
+
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findUserByUsername(username);
+        User user = userRepository.findByEmail(username);
         if (user != null) {
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -49,6 +63,6 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
 
     public User findByUsername(String userName) {
-        return this.userRepository.findUserByUsername(userName);
+        return this.userRepository.findByEmail(userName);
     }
 }
