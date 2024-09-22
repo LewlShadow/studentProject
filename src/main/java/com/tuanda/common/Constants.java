@@ -21,6 +21,7 @@ public class Constants {
                 INVALID_PASSWORD = "INVALID_PASSWORD: must not be empty, length between 8-20 characters, and must include at least one uppercase letter, one lowercase letter, one number, and one special character",
                 INVALID_EMAIL = "INVALID_EMAIL: must not be empty, must be in a valid email format",
                 EXIST_USERNAME = "Username: %s is already taken",
-                EXIST_EMAIL = "Email: %s is already taken";
+                EXIST_EMAIL = "Email: %s is already taken",
+                USER_ID_IS_NOT_EXIST = "The ID is not exist";
     }
 }

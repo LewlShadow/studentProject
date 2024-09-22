@@ -1,6 +1,7 @@
 package com.tuanda.controller;
 
 import com.tuanda.common.EntityResponse;
+import com.tuanda.dto.request.UserRequestDTO;
 import com.tuanda.service.CommonUserService;
 import com.tuanda.service.JwtUserDetailsService;
 import lombok.SneakyThrows;
@@ -8,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -27,5 +26,10 @@ public class UserController extends BaseController {
     }
 
 
-
+    @SneakyThrows
+    @PutMapping("/update-profile/{id}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserRequestDTO dto) {
+        return EntityResponse.generateSuccessResponse(userService.updateProfile(id, dto));
+    }
 }

@@ -15,4 +15,8 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "password", source = "password")
     User mapToUser(UserRequestDTO userRequestDTO, String password);
+
+    @Mapping(target = "password", source = "password")
+    @Mapping(target = "authorities", ignore = true)
+    User mapToUser(UserRequestDTO user, String password, Long id);
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -65,6 +66,15 @@ public class JwtUserDetailsService implements UserDetailsService {
         String password = this.bcryptEncoder.encode(userDto.getPassword());
         User user = this.userMapper.mapToUser(userDto, password);
         return this.userRepository.save(user);
+    }
+
+    public User updateProfile(Long id, UserRequestDTO userDto) throws InvalidFormatException {
+        validateInfo(userDto);
+        String password = this.bcryptEncoder.encode(userDto.getPassword());
+        User old_user = this.userRepository.findById(id).orElse(null);
+        if(Objects.isNull(old_user)) throw new InvalidFormatException(Constants.Message.USER_ID_IS_NOT_EXIST);
+        User new_user = this.userMapper.mapToUser(userDto, password, id);
+        return this.userRepository.save(new_user);
     }
 
     private void validateInfo(UserRequestDTO userDto) throws InvalidFormatException {
