@@ -24,6 +24,9 @@ public class User implements Serializable, UserDetails {
     @Column(name = "email_address")
     private String email;
 
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "name")
     private String userFullName;
 
@@ -32,8 +35,6 @@ public class User implements Serializable, UserDetails {
     private String password;
 
     private String role;
-
-    private String gender;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

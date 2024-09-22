@@ -1,9 +1,12 @@
 package com.tuanda.service;
 
+import com.tuanda.common.Constants;
+import com.tuanda.custome_exception.InvalidFormatException;
 import com.tuanda.dto.request.UserRequestDTO;
 import com.tuanda.entity.User;
 import com.tuanda.mapper.UserMapper;
 import com.tuanda.repository.UserRepository;
+import com.tuanda.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -42,7 +46,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByEmail(username);
+        User user = userRepository.findUserByUsername(username);
         if (user != null) {
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -56,13 +60,36 @@ public class JwtUserDetailsService implements UserDetailsService {
         return null;
     }
 
-    public User save(UserRequestDTO userDto) {
+    public User save(UserRequestDTO userDto) throws InvalidFormatException {
+        validateInfo(userDto);
         String password = this.bcryptEncoder.encode(userDto.getPassword());
         User user = this.userMapper.mapToUser(userDto, password);
         return this.userRepository.save(user);
     }
 
-    public User findByUsername(String userName) {
-        return this.userRepository.findByEmail(userName);
+    private void validateInfo(UserRequestDTO userDto) throws InvalidFormatException {
+        if (!StringUtils.isValidEmail(userDto.getEmail()))
+            throw new InvalidFormatException(Constants.Message.INVALID_EMAIL);
+        if (!StringUtils.isValidUsername(userDto.getUsername()))
+            throw new InvalidFormatException(Constants.Message.INVALID_USERNAME);
+        if (!StringUtils.isValidPassword(userDto.getPassword()))
+            throw new InvalidFormatException(Constants.Message.INVALID_PASSWORD);
+
+        Long id = this.userRepository.findUserIdByUserName(userDto.getUsername());
+        if (Objects.nonNull(id))
+            throw new InvalidFormatException(String.format(Constants.Message.EXIST_USERNAME, userDto.getUsername()));
+
+        String username = this.userRepository.findUsernameByEmail(userDto.getEmail());
+        if (Objects.nonNull(username))
+            throw new InvalidFormatException(String.format(Constants.Message.EXIST_EMAIL, userDto.getEmail()));
     }
+
+    public User findByUsername(String userName) {
+        return this.userRepository.findUserByUsername(userName);
+    }
+
+    public String findUsernameByEmail(String email) {
+        return this.userRepository.findUsernameByEmail(email);
+    }
+
 }

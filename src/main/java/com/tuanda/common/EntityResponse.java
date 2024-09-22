@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @prOjEct studentProject-main
@@ -20,8 +21,16 @@ public class EntityResponse {
         map.put("TimeStamp", new Date());
         map.put("Message", message);
         map.put("Status", status.value());
-        map.put("Data", responseObj);
+        if (Objects.nonNull(responseObj)) map.put("Data", responseObj);
 
         return new ResponseEntity<>(map, status);
+    }
+
+    public static ResponseEntity<Object> generateResponse(String message, HttpStatus status) {
+        return generateResponse(message, status, null);
+    }
+
+    public static ResponseEntity<Object> generateErrorResponse(String message, HttpStatus status) {
+        return generateResponse(message, status, null);
     }
 }

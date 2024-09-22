@@ -66,9 +66,9 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChainGlobalAPI(HttpSecurity httpSecurity) throws Exception {
         sharedSecurityConfiguration(httpSecurity);
         httpSecurity
-                .securityMatcher("/teacher/**")
+                .securityMatcher("/user/**")
                 .authorizeHttpRequests(auth -> {
-                    auth.anyRequest().hasAuthority("TEACHER");
+                    auth.anyRequest().hasAuthority("USER");
                 })
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -79,20 +79,7 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChainLoginAPI(HttpSecurity httpSecurity) throws Exception {
         sharedSecurityConfiguration(httpSecurity);
         httpSecurity
-                .securityMatcher("/user/**")
-                .authorizeHttpRequests(auth -> {
-                    auth.anyRequest().permitAll();
-                })
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return httpSecurity.build();
-    }
-
-    @Bean
-    SecurityFilterChain securityFilterChainRegisterAPI(HttpSecurity httpSecurity) throws Exception {
-        sharedSecurityConfiguration(httpSecurity);
-        httpSecurity
-                .securityMatcher("/user/register")
+                .securityMatcher("/auth/**")
                 .authorizeHttpRequests(auth -> {
                     auth.anyRequest().permitAll();
                 })
