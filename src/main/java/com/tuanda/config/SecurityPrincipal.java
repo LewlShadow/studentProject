@@ -24,7 +24,7 @@ public class SecurityPrincipal {
 
 	@Autowired	
 	private SecurityPrincipal(JwtUserDetailsService userService) {
-		this.userService = userService;
+		SecurityPrincipal.userService = userService;
 	}
 
 	

@@ -33,4 +33,8 @@ public class EntityResponse {
     public static ResponseEntity<Object> generateErrorResponse(String message, HttpStatus status) {
         return generateResponse(message, status, null);
     }
+
+    public static ResponseEntity<Object> generateSuccessResponse(Object data) {
+        return generateResponse("Success", HttpStatus.OK, data);
+    }
 }

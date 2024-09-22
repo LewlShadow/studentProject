@@ -43,7 +43,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return this.username;
     }
 
     @Override
