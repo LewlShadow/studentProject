@@ -33,4 +33,12 @@ public class StringUtils {
         return matcher.matches();
     }
 
+    public static boolean isEmpty(String string){
+        return string == null || string.isEmpty();
+    }
+
+    public static boolean isNotEmpty(String str){
+        return !StringUtils.isEmpty(str);
+    }
+
 }

@@ -15,4 +15,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long findUserIdByUserName(String username);
 
     User findUserByUsername(String username);
+
+    @Query("SELECT id FROM User WHERE username = :username AND id != :id")
+    Long findUserIdByUserNameExceptSelf(String username, Long id);
+
+    @Query("SELECT username  FROM User WHERE email = :email AND id != :id")
+    String findUsernameByEmailExceptSelf(String email, Long id);
 }

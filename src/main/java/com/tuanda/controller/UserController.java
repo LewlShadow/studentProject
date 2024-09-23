@@ -32,4 +32,11 @@ public class UserController extends BaseController {
     public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserRequestDTO dto) {
         return EntityResponse.generateSuccessResponse(userService.updateProfile(id, dto));
     }
+
+    @SneakyThrows
+    @GetMapping("/validate")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> validateToken(Authentication authentication) {
+        return EntityResponse.generateSuccessResponse(authentication.getName());
+    }
 }

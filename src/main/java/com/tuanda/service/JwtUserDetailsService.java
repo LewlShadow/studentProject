@@ -69,10 +69,14 @@ public class JwtUserDetailsService implements UserDetailsService {
     }
 
     public User updateProfile(Long id, UserRequestDTO userDto) throws InvalidFormatException {
-        validateInfo(userDto);
-        String password = this.bcryptEncoder.encode(userDto.getPassword());
+        boolean isChangePassword = StringUtils.isNotEmpty(userDto.getPassword());
+        validateNewInfo(userDto, id);
         User old_user = this.userRepository.findById(id).orElse(null);
         if(Objects.isNull(old_user)) throw new InvalidFormatException(Constants.Message.USER_ID_IS_NOT_EXIST);
+        // if change password
+        String password = old_user.getPassword();
+        if(isChangePassword)
+            password = this.bcryptEncoder.encode(userDto.getPassword());
         User new_user = this.userMapper.mapToUser(userDto, password, id);
         return this.userRepository.save(new_user);
     }
@@ -90,6 +94,24 @@ public class JwtUserDetailsService implements UserDetailsService {
             throw new InvalidFormatException(String.format(Constants.Message.EXIST_USERNAME, userDto.getUsername()));
 
         String username = this.userRepository.findUsernameByEmail(userDto.getEmail());
+        if (Objects.nonNull(username))
+            throw new InvalidFormatException(String.format(Constants.Message.EXIST_EMAIL, userDto.getEmail()));
+    }
+
+    private void validateNewInfo(UserRequestDTO userDto, Long userId) throws InvalidFormatException {
+        boolean isUpdatePassword = StringUtils.isNotEmpty(userDto.getPassword());
+        if (!StringUtils.isValidEmail(userDto.getEmail()))
+            throw new InvalidFormatException(Constants.Message.INVALID_EMAIL);
+        if (!StringUtils.isValidUsername(userDto.getUsername()))
+            throw new InvalidFormatException(Constants.Message.INVALID_USERNAME);
+        if (isUpdatePassword && !StringUtils.isValidPassword(userDto.getPassword()))
+            throw new InvalidFormatException(Constants.Message.INVALID_PASSWORD);
+
+        Long id = this.userRepository.findUserIdByUserNameExceptSelf(userDto.getUsername(), userId);
+        if (Objects.nonNull(id))
+            throw new InvalidFormatException(String.format(Constants.Message.EXIST_USERNAME, userDto.getUsername()));
+
+        String username = this.userRepository.findUsernameByEmailExceptSelf(userDto.getEmail(), userId);
         if (Objects.nonNull(username))
             throw new InvalidFormatException(String.format(Constants.Message.EXIST_EMAIL, userDto.getEmail()));
     }

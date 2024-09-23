@@ -49,7 +49,7 @@ public class JwtAuthenticationController extends BaseController {
         try {
             authenticate(loginRequestDTO);
         } catch (Exception e) {
-            return EntityResponse.generateResponse("Authentication Failed", HttpStatus.OK,
+            return EntityResponse.generateResponse("Authentication Failed", HttpStatus.UNAUTHORIZED,
                     "Invalid credentials, please check details and try again.");
         }
 
