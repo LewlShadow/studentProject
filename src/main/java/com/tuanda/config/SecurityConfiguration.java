@@ -3,6 +3,7 @@ package com.tuanda.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -80,6 +81,34 @@ public class SecurityConfiguration {
         sharedSecurityConfiguration(httpSecurity);
         httpSecurity
                 .securityMatcher("/auth/**")
+                .authorizeHttpRequests(auth -> {
+                    auth.anyRequest().permitAll();
+                })
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
+    }
+
+    @Bean
+    @Order(1)
+    SecurityFilterChain securityFilterChainComment(HttpSecurity httpSecurity) throws Exception {
+        sharedSecurityConfiguration(httpSecurity);
+        httpSecurity
+                .securityMatcher("/article/post-comment")
+                .authorizeHttpRequests(auth -> {
+                    auth.anyRequest().hasAuthority("USER");
+                })
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
+    }
+
+    @Bean
+    @Order(2)
+    SecurityFilterChain securityFilterChainArticle(HttpSecurity httpSecurity) throws Exception {
+        sharedSecurityConfiguration(httpSecurity);
+        httpSecurity
+                .securityMatcher("/article/**")
                 .authorizeHttpRequests(auth -> {
                     auth.anyRequest().permitAll();
                 })

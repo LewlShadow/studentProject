@@ -27,10 +27,10 @@ public class UserController extends BaseController {
 
 
     @SneakyThrows
-    @PutMapping("/update-profile/{id}")
+    @PutMapping("/update-profile")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserRequestDTO dto) {
-        return EntityResponse.generateSuccessResponse(userService.updateProfile(id, dto));
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserRequestDTO dto) {
+        return EntityResponse.generateSuccessResponse(userService.updateProfile(dto));
     }
 
     @SneakyThrows
