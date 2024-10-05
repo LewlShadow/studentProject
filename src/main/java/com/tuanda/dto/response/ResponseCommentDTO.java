@@ -15,6 +15,7 @@ public class ResponseCommentDTO {
     private Timestamp date;
     private List<ResponseCommentDTO> replies = new ArrayList<>();
     private Long level;
+    private Long articleId;
     @JsonIgnore
     private Long parentCommentId;
 

@@ -85,6 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Long comment(PostCommentDTO dto, String username) {
+        validateContentArticle(dto.getText(), 1, 100);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Comment comment = this.commentMapper.mapToComment(dto, username, timestamp);
         Comment storeComment = this.commentRepository.save(comment);
