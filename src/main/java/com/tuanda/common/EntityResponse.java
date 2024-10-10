@@ -3,10 +3,7 @@ package com.tuanda.common;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @prOjEct studentProject-main
@@ -17,7 +14,7 @@ import java.util.Objects;
 public class EntityResponse {
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status, Object responseObj) {
 
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("TimeStamp", new Date());
         map.put("Message", message);
         map.put("Status", status.value());
