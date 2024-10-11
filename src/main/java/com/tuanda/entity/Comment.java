@@ -25,7 +25,6 @@ public class Comment {
     private String text;
 
     @Column(name = "date", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp date;
 
     @Column(name = "level", nullable = false)
